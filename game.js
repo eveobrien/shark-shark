@@ -131,7 +131,7 @@ function update(){
 
   if(gameState==="freeze"){
     freezeTimer++;
-    if(freezeTimer>180) gameState="transition";
+    if(freezeTimer>200) gameState="transition";
   }
   if(gameState==="transition"){
     transitionOffset+=8;
@@ -311,10 +311,8 @@ function drawText(){
   }
   if(gameState==="freeze"){
     ctx.font="12px 'Press Start 2P'"; ctx.fillStyle="#fff";
-    ctx.fillText("IF YOU CAN OUTSWIM", canvas.width/2, 260);
-    ctx.fillText("YOUR PAST,", canvas.width/2, 290);
-    ctx.fillStyle=COLORS.yellowSoft; ctx.fillText("IMAGINE WHAT WE", canvas.width/2, 330);
-    ctx.fillStyle="#fff"; ctx.fillText("CAN BUILD TOGETHER", canvas.width/2, 360);
+    ctx.fillText("...WAIT", canvas.width/2, 260);
+    ctx.fillText("WHAT'S THIS...?,", canvas.width/2, 290);
   }
 }
 
