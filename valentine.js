@@ -161,6 +161,11 @@ chihuahuaImg.src = "chihuahua.png";
     ctx.fillStyle = C.white;
     wrapText(ctx, paragraph, cx, startY, maxW, 26);
 
+    // Final line – softer, romantic emphasis
+    ctx.fillStyle = C.pinkSparkleLight;
+    ctx.font = "14px 'Press Start 2P'";
+    ctx.fillText("My forever Valentine 💜", cx, startY + 26 * 7);
+
     // Soft prompt
     ctx.fillStyle = C.sparklePinkLight || C.pinkSparkleLight;
     ctx.font = "12px 'Press Start 2P'";
