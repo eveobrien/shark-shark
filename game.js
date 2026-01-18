@@ -2,7 +2,7 @@ const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d"); ctx.imageSmoothingEnabled=false;
 
 // Turn this off before shipping
-const DEV_MODE=true;
+const DEV_MODE=false;
 
 const COLORS={
   purpleMain:"#9b7bd3", purpleDark:"#6f4fa3",
