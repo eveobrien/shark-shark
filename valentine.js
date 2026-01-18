@@ -125,7 +125,7 @@ chihuahuaImg.src = "chihuahua.png";
     ctx.textAlign="center";
     ctx.font="18px 'Press Start 2P'";
     ctx.fillStyle=COLORS.pinkSparkle;
-    ctx.fillText("MWAH 💋", cx, canvas.height*0.22);
+    ctx.fillText("MWAH", cx, canvas.height*0.22);
 
     drawSparkles(COLORS.pinkSparkleLight);
     return kissT>360;
@@ -149,7 +149,7 @@ chihuahuaImg.src = "chihuahua.png";
 
     // Paragraph (gift-ready, forever language)
     const paragraph =
-      "I love you more than I can put into words. You are perfect to me, and so incredibly beautiful inside and out I will choose you today, tomorrow, and forever. You are my soulmate, my best friend, and my favorite person. I want to be with you for the rest of my life.";
+      "I love you more than I can put into words. You are perfect to me, and so incredibly beautiful inside and out I will choose you today, tomorrow, and forever. You are my soulmate, my best friend, and my favourite person. I want to be with you for the rest of my life.";
 
     ctx.fillStyle = C.white;
     ctx.font = "14px 'Press Start 2P'";
