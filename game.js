@@ -21,7 +21,7 @@ let frame=0, score=0;
 let freezeTimer=0, transitionOffset=0, fadeAlpha=0;
 let sparkles=[];
 
-const gravity=0.5, jumpStrength=-7, pipeGap=110, pipeWidth=40, pipeSpeed=2;
+const gravity=0.5, jumpStrength=-7, pipeGap=130, pipeWidth=40, pipeSpeed=2;
 const shark={x:90,y:canvas.height/2,size:16,velocity:0};
 let pipes=[];
 
@@ -370,7 +370,6 @@ function drawText(){
       ctx.fillText("REPLAY LOVE STORY", canvas.width / 2, r.y + 40);
       ctx.font = "10px \'Press Start 2P\'";
       ctx.fillStyle = COLORS.yellowSoft;
-      ctx.fillText("(no need to beat anything)", canvas.width / 2, r.y + 78);
     }
 
   }
