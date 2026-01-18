@@ -51,13 +51,23 @@ document.addEventListener("keydown",(e)=>{
   if(e.code==="KeyV"){ gameState="freeze"; freezeTimer=0; transitionOffset=0; fadeAlpha=0; }
 });
 
+function getCanvasMousePos(canvas, e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top) * scaleY
+  };
+}
+
 canvas.addEventListener("click", (e) => {
 
   // Home screen replay button (available after the story has been seen once)
   if (gameState === "start" && storySeen) {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getCanvasMousePos(canvas, e);
+
     const r = getReplayButtonRect();
     const inRect = x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
     if (inRect) {
@@ -66,17 +76,24 @@ canvas.addEventListener("click", (e) => {
     }
   }
 
-  if(gameState==="valentine"){
-    const rect=canvas.getBoundingClientRect();
-    const x=e.clientX-rect.left, y=e.clientY-rect.top;
-    const didYes=Valentine.handleValentineClick({canvas,x,y,getButtons:getValentineButtons});
-    if(didYes){
-      spawnSparkles(canvas.width/2, canvas.height*0.46, COLORS.pinkSparkleLight, 56);
+  if (gameState === "valentine") {
+    const { x, y } = getCanvasMousePos(canvas, e);
+
+    const didYes = Valentine.handleValentineClick({
+      canvas,
+      x,
+      y,
+      getButtons: getValentineButtons
+    });
+
+    if (didYes) {
+      spawnSparkles(canvas.width / 2, canvas.height * 0.46, COLORS.pinkSparkleLight, 56);
       enterCelebrate();
     }
     return;
   }
-  if(gameState==="final") gameState="start";
+
+  if (gameState === "final") gameState = "start";
 });
 
 function getReplayButtonRect(){
