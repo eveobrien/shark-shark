@@ -213,7 +213,12 @@ function drawCoral(p,y,height,flip=1){
   });
 }
 
-function drawPipes(){ pipes.forEach(p=>{ drawCoral(p,0,p.top,1); drawCoral(p,p.bottom,canvas.height-p.bottom,-1); }); }
+function drawPipes() {
+  pipes.forEach(p => {
+    drawCoral(p, 0, p.top, 1);
+    drawCoral(p, p.bottom, canvas.height - p.bottom, -1);
+  });
+}
 
 
 function drawGhost(){
