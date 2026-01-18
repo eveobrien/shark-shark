@@ -282,8 +282,7 @@ function drawGhost(){
 function drawText(){
   ctx.textAlign="center";
   if(gameState==="start"){
-    ctx.font="20px 'Press Start 2P'"; ctx.fillStyle=COLORS.purpleMain; ctx.fillText("FLAPPY SHARK", canvas.width/2, 220);
-    ctx.font="12px 'Press Start 2P'"; ctx.fillStyle=COLORS.yellowSoft; ctx.fillText("IT REMEMBERS YOU", canvas.width/2, 300);
+    ctx.font="20px 'Press Start 2P'"; ctx.fillStyle=COLORS.purpleMain; ctx.fillText("SHARK DASH", canvas.width/2, 220);
     ctx.fillText("PRESS SPACE", canvas.width/2, 340);
     if(DEV_MODE){
       ctx.font="10px 'Press Start 2P'"; ctx.fillStyle=COLORS.pinkSparkleLight;
@@ -312,7 +311,7 @@ function drawText(){
   if(gameState==="freeze"){
     ctx.font="12px 'Press Start 2P'"; ctx.fillStyle="#fff";
     ctx.fillText("...WAIT", canvas.width/2, 260);
-    ctx.fillText("WHAT'S THIS...?,", canvas.width/2, 290);
+    ctx.fillText("WHAT'S THIS...?", canvas.width/2, 290);
   }
 }
 
