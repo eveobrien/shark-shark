@@ -254,18 +254,74 @@ function drawPixelShark(x, y, a = 1) {
 
 
 
-function drawCoral(p,y,height,flip=1){
-  const sway=Math.sin(frame*0.02+p.swaySeed)*3;
-  const x=p.x+sway*flip;
-  ctx.fillStyle=COLORS.redCoral; ctx.fillRect(x,y,pipeWidth,height);
-  for(let i=0;i<height;i+=16){ ctx.fillRect(x-4,y+i,4,10); ctx.fillRect(x+pipeWidth,y+i+6,4,10); }
-  ctx.fillStyle=COLORS.redCoralDark; ctx.fillRect(x+pipeWidth-4,y,4,height);
-  ctx.fillStyle=COLORS.yellowSoft;
-  p.polyps.forEach((pp,i)=>{
-    if(Math.sin(frame*0.05+pp*10)>0.6){
-      const px=x+(i*7)%(pipeWidth-2);
-      const py=y+(i*29)%Math.max(1,height-2);
-      ctx.fillRect(px,py,2,2);
+function drawCoral(p, y, height, flip = 1) {
+  const sway = Math.sin(frame * 0.02 + p.swaySeed) * 3;
+  const x = p.x + sway * flip;
+
+  // --- base body ---
+  ctx.fillStyle = COLORS.redCoral;
+  ctx.fillRect(x, y, pipeWidth, height);
+
+  // --- depth stripes / shading (inside texture) ---
+  ctx.fillStyle = COLORS.redCoralDark;
+  for (let sx = 3; sx < pipeWidth; sx += 7) {
+    // alternating skinny stripes
+    if (((sx / 7) | 0) % 2 === 0) ctx.fillRect(x + sx, y, 2, height);
+  }
+
+  // darker far edge shadow
+  ctx.fillRect(x + pipeWidth - 4, y, 4, height);
+
+  // --- organic side nubs (vary size + spacing) ---
+  for (let i = 8; i < height; ) {
+    const r = (Math.sin(p.swaySeed * 10 + i * 0.22) * 0.5 + 0.5);
+    const nubH = 8 + ((r * 6) | 0);     // 8..14
+    const nubW = 3 + ((r * 3) | 0);     // 3..6
+    const leftOut = (i % 3 === 0) ? nubW + 1 : nubW;
+    const rightOut = (i % 4 === 0) ? nubW + 1 : nubW;
+
+    // left nub
+    ctx.fillStyle = COLORS.redCoralDark;
+    ctx.fillRect(x - leftOut, y + i, leftOut, nubH);
+    ctx.fillStyle = COLORS.redCoral;
+    ctx.fillRect(x - leftOut + 1, y + i + 1, leftOut - 1, nubH - 2);
+
+    // right nub
+    ctx.fillStyle = COLORS.redCoralDark;
+    ctx.fillRect(x + pipeWidth, y + i + 2, rightOut, nubH);
+    ctx.fillStyle = COLORS.redCoral;
+    ctx.fillRect(x + pipeWidth, y + i + 3, rightOut - 1, nubH - 2);
+
+    i += 14 + ((r * 10) | 0); // uneven spacing
+  }
+
+  // --- rim / cap at opening (mouth lip) ---
+  const capH = 10;
+  const capY = (y === 0) ? (y + height - capH) : y;
+
+  // dark rim
+  ctx.fillStyle = COLORS.redCoralDark;
+  ctx.fillRect(x - 2, capY, pipeWidth + 4, capH);
+
+  // inner rim highlight (makes it feel hollow)
+  ctx.fillStyle = COLORS.redCoral;
+  ctx.fillRect(x, capY + 2, pipeWidth, capH - 3);
+
+  // jagged rim pixels (breaks rectangle silhouette)
+  ctx.fillStyle = COLORS.redCoralDark;
+  for (let j = 0; j < pipeWidth; j += 9) {
+    const jy = (j % 18 === 0) ? 1 : 6;
+    ctx.fillRect(x + j + 1, capY + jy, 3, 2);
+  }
+
+  // --- keep your existing "polyp sparkle" behavior ---
+  ctx.fillStyle = COLORS.yellowSoft;
+  p.polyps.forEach((pp, i) => {
+    if (Math.sin(frame * 0.05 + pp * 10) > 0.6) {
+      const px = x + (i * 7) % (pipeWidth - 2);
+      const py = y + (i * 29) % Math.max(1, height - 2);
+      ctx.fillRect(px, py, 2, 2);
+      if (i % 3 === 0) ctx.fillRect(px + 2, py, 1, 1); // tiny extra sparkle
     }
   });
 }
