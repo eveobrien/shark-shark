@@ -3,9 +3,11 @@
 
   // Heart sprite (place heart.png beside index.html)
   const heartSprite = new Image();
-  // Chihuahua sprite (jumping celebrate jumpers)
-  const chihuahuaImg = new Image();
-  chihuahuaImg.src = "chihuahua.png";
+
+// Chihuahua sprite (replaces jumping sharks)
+const chihuahuaImg = new Image();
+chihuahuaImg.src = "chihuahua.png";
+
   heartSprite.src = "heart.png";
 
 
@@ -65,8 +67,9 @@
     celebrateT++;
     bg(ctx,canvas,COLORS);
     twinkles(ctx,COLORS,frame);
+    // Pass canvas so floating hearts can compute fade/positions safely
     floatingHearts(ctx, COLORS, frame, canvas);
-tinySharks(ctx,COLORS,frame);
+    tinySharks(ctx,COLORS,frame);
 
     const floorY=canvas.height*0.85;
     bigWhites.forEach(s=>{
@@ -95,8 +98,10 @@ tinySharks(ctx,COLORS,frame);
     kissT++;
     bg(ctx,canvas,COLORS);
     twinkles(ctx,COLORS,frame);
+    // Pass canvas so floating hearts can compute fade/positions safely
     floatingHearts(ctx, COLORS, frame, canvas);
-const cx=canvas.width/2, y=canvas.height*0.55;
+
+    const cx=canvas.width/2, y=canvas.height*0.55;
     const t=Math.min(1, kissT/180);
     const leftX=lerp(-220, cx-110, t);
     const rightX=lerp(canvas.width+220, cx+110, t);
@@ -120,7 +125,7 @@ const cx=canvas.width/2, y=canvas.height*0.55;
     ctx.textAlign="center";
     ctx.font="18px 'Press Start 2P'";
     ctx.fillStyle=COLORS.pinkSparkle;
-    ctx.fillText("MWAH <3", cx, canvas.height*0.22);
+    ctx.fillText("MWAH 💋", cx, canvas.height*0.22);
 
     drawSparkles(COLORS.pinkSparkleLight);
     return kissT>360;
@@ -144,13 +149,13 @@ const cx=canvas.width/2, y=canvas.height*0.55;
 
     // Paragraph (gift-ready, forever language)
     const paragraph =
-      "I love you more than I can put into words. I want you today, tomorrow, and always. You are my soulmate, my best friend, and my forever. I want to be with you for the rest of this life and the next, through all of your happiest days, and your darkest days - forever <3";
+      "I love you more than I can put into words. You are perfect to me, and so incredibly beautiful inside and out I will choose you today, tomorrow, and forever. You are my soulmate, my best friend, and my favorite person. I want to be with you for the rest of my life.";
 
     ctx.fillStyle = C.white;
     ctx.font = "14px 'Press Start 2P'";
     const maxW = Math.min(620, canvas.width * 0.82);
     const startY = canvas.height * 0.30;
-    ctx.fillStyle = "rgba(0,0,0,0)";
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
     ctx.fillRect(Math.round(cx - maxW/2) - 18, Math.round(startY) - 34, Math.round(maxW) + 36, 240);
 
     ctx.fillStyle = C.white;
@@ -314,17 +319,20 @@ const cx=canvas.width/2, y=canvas.height*0.55;
     return arr;
   }
 
-  function drawBigWhite(ctx, x, y, dir){
-    // Draw jumping Chihuahua sprite (replaces the old rectangular big white shark)
+  function drawBigWhite(ctx, x, y, dir) {
+    // Draw jumping Chihuahua sprite (replaces the old big white shark)
     const w = 96;   // draw size (tweak if you want bigger/smaller)
     const h = 64;
 
     ctx.save();
     ctx.translate(x, y);
-    if(dir===-1) ctx.scale(-1,1);
+    if (dir === -1) ctx.scale(-1, 1);
     ctx.imageSmoothingEnabled = false;
 
-    // Anchor: y is treated like "feet on floor"
+    // soft shadow on the "water"/ground
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fillRect(-w * 0.45, 2, w * 0.9, 6);
+
     if (!chihuahuaImg.complete || chihuahuaImg.naturalWidth === 0) {
       // fallback if image hasn't loaded yet
       ctx.fillStyle = "#ffb07a";
@@ -332,7 +340,8 @@ const cx=canvas.width/2, y=canvas.height*0.55;
       ctx.fillStyle = "#000";
       ctx.fillRect(-8, -h + 18, 6, 6);
     } else {
-      ctx.drawImage(chihuahuaImg, -w/2, -h, w, h);
+      // anchor: y is treated like "feet on floor"
+      ctx.drawImage(chihuahuaImg, -w / 2, -h, w, h);
     }
 
     ctx.restore();

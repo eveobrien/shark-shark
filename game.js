@@ -11,6 +11,8 @@ const COLORS={
   bg:"#1a1429",
   pinkSparkle:"#ff4fd8", pinkSparkleLight:"#ff8fe7",
   blueShark:"#8fd3ff", white:"#ffffff",
+  sharkDark:"#1f4a7a", sharkMid:"#3f7fc8", sharkLight:"#8fd3ff", sharkBelly:"#eef7ff", sharkStripe:"#f2d16b",
+
 };
 
 let gameState="start"; // start|playing|gameover|freeze|transition|valentine|celebrate|kiss|final
@@ -30,6 +32,7 @@ let bestScore=Number(localStorage.getItem("bestScore"))||0;
 let secretUnlocked = localStorage.getItem("secretUnlocked") === "true";
 let storySeen = localStorage.getItem("storySeen") === "true";
 
+let runsPlayed = Number(localStorage.getItem("runsPlayed")) || 0;
 for(let i=0;i<80;i++) stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,speed:Math.random()*0.25+0.1});
 for(let i=0;i<30;i++) bubbles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*3+2,speed:Math.random()*0.35+0.2});
 
@@ -99,6 +102,9 @@ function resetGame(){
   pipes=[]; score=0; frame=0; currentRunPath=[];
   freezeTimer=0; transitionOffset=0; fadeAlpha=0; sparkles=[];
   gameState="playing";
+  // Count completed runs to trigger the love story on the 2nd play
+  runsPlayed += 1;
+  localStorage.setItem("runsPlayed", String(runsPlayed));
 }
 
 function createPipe(){
@@ -155,12 +161,17 @@ function enterKiss() {
 }
 function enterFinal() {
   gameState = "final";
+  // Mark story as completed so the replay button appears on Home
+  storySeen = true;
+  localStorage.setItem("storySeen", "true");
   if (window.Valentine && Valentine.startFinal) Valentine.startFinal({ canvas, COLORS });
 }
 
 function endGame(){
   if(DEV_MODE){ gameState="freeze"; freezeTimer=0; transitionOffset=0; fadeAlpha=0; return; }
 
+  
+  // Ship behavior: trigger the love story after the player has played twice (on the 2nd run's game over).
   const hadGhost=ghostPath.length>0;
   if(score>bestScore){
     bestScore=score; ghostPath=currentRunPath;
@@ -188,14 +199,60 @@ function drawBackground(){
   ctx.fillStyle="rgba(200,210,255,0.5)"; bubbles.forEach(b=>ctx.fillRect(b.x,b.y,b.size,b.size));
 }
 
-function drawPixelShark(x,y,a=1){
-  ctx.save(); ctx.globalAlpha=a;
-  ctx.fillStyle=COLORS.purpleDark; ctx.fillRect(x-1,y+1,18,10);
-  ctx.fillStyle=COLORS.purpleMain; ctx.fillRect(x,y,16,8); ctx.fillRect(x+2,y-4,12,4);
-  ctx.fillStyle=COLORS.purpleDark; ctx.fillRect(x+6,y-8,4,4); ctx.fillRect(x-4,y+2,4,4);
-  ctx.fillStyle="#000"; ctx.fillRect(x+12,y+2,2,2);
+// Detailed main shark (blue/yellow)
+function drawPixelShark(x, y, a = 1) {
+  ctx.save();
+  ctx.globalAlpha = a;
+
+  // shadow
+  ctx.fillStyle = "rgba(0,0,0,0.35)";
+  ctx.fillRect(x - 6, y + 26, 46, 3);
+
+  // back ridge
+  ctx.fillStyle = COLORS.sharkDark;
+  ctx.fillRect(x + 6, y + 10, 34, 14);
+  ctx.fillRect(x + 16, y + 4, 18, 6);
+
+  // body mid
+  ctx.fillStyle = COLORS.sharkMid;
+  ctx.fillRect(x + 8, y + 12, 34, 12);
+  ctx.fillRect(x + 18, y + 6, 16, 6);
+
+  // highlight
+  ctx.fillStyle = COLORS.sharkLight;
+  ctx.fillRect(x + 12, y + 12, 18, 4);
+  ctx.fillRect(x + 24, y + 16, 12, 3);
+
+  // belly
+  ctx.fillStyle = COLORS.sharkBelly;
+  ctx.fillRect(x + 18, y + 22, 18, 6);
+
+  // yellow stripe accent
+  ctx.fillStyle = COLORS.sharkStripe;
+  ctx.fillRect(x + 14, y + 18, 10, 2);
+
+  // fin
+  ctx.fillStyle = COLORS.sharkDark;
+  ctx.fillRect(x + 26, y - 4, 8, 10);
+  ctx.fillStyle = COLORS.sharkMid;
+  ctx.fillRect(x + 27, y - 3, 6, 8);
+
+  // tail
+  ctx.fillStyle = COLORS.sharkMid;
+  ctx.fillRect(x - 10, y + 16, 14, 10);
+  ctx.fillStyle = COLORS.sharkDark;
+  ctx.fillRect(x - 16, y + 14, 6, 6);
+
+  // eye
+  ctx.fillStyle = "#000";
+  ctx.fillRect(x + 36, y + 16, 3, 3);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(x + 37, y + 16, 1, 1);
+
   ctx.restore();
 }
+
+
 
 function drawCoral(p,y,height,flip=1){
   const sway=Math.sin(frame*0.02+p.swaySeed)*3;
@@ -213,12 +270,7 @@ function drawCoral(p,y,height,flip=1){
   });
 }
 
-function drawPipes() {
-  pipes.forEach(p => {
-    drawCoral(p, 0, p.top, 1);
-    drawCoral(p, p.bottom, canvas.height - p.bottom, -1);
-  });
-}
+function drawPipes(){ pipes.forEach(p=>{ drawCoral(p,0,p.top,1); drawCoral(p,p.bottom,canvas.height-p.bottom,-1); }); }
 
 
 function drawGhost(){
