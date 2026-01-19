@@ -187,8 +187,18 @@ function enterFinal() {
 function endGame(){
   if(DEV_MODE){ gameState="freeze"; freezeTimer=0; transitionOffset=0; fadeAlpha=0; return; }
 
-  
-  // Ship behavior: trigger the love story after the player has played twice (on the 2nd run's game over).
+  // Ship behavior: trigger the love story after the player has played twice
+  // (i.e., after the 2nd run ends / the player dies twice).
+  //
+  // `runsPlayed` increments in `resetGame()` when a new run starts.
+  // So on the 2nd death, `runsPlayed` will be >= 2.
+  if(!storySeen && runsPlayed >= 2){
+    gameState="freeze";
+    freezeTimer=0; transitionOffset=0; fadeAlpha=0;
+    return;
+  }
+
+  // Secondary (legacy) secret trigger: best score update when a ghost already exists.
   const hadGhost=ghostPath.length>0;
   if(score>bestScore){
     bestScore=score; ghostPath=currentRunPath;
